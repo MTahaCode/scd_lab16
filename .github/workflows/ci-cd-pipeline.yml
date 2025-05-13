@@ -21,39 +21,26 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}  # Set in GitHub secrets
           password: ${{ secrets.DOCKER_PASSWORD }}  # Set in GitHub secrets
 
-      # Build and push Docker images for each service
+      # Build and push blog-service image
       - name: Build and push blog-service image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/blog-service:latest ./microservices/blog-service
           docker push ${{ secrets.DOCKER_USERNAME }}/blog-service:latest
 
+      # Build and push auth-service image
       - name: Build and push auth-service image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/auth-service:latest ./microservices/auth-service
           docker push ${{ secrets.DOCKER_USERNAME }}/auth-service:latest
 
+      # Build and push analytics-service image
       - name: Build and push analytics-service image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/analytics-service:latest ./microservices/analytics-service
           docker push ${{ secrets.DOCKER_USERNAME }}/analytics-service:latest
 
-      # Set up Kubernetes credentials from secret (optional, comment if not needed)
-    #   - name: Set up Kubeconfig
-    #     uses: azure/setup-kubectl@v1
-    #     with:
-    #       kubeconfig: ${{ secrets.KUBECONFIG }}  # Set your kubeconfig file as a GitHub secret
-
-    #   # Deploy the services to Kubernetes (optional, comment if not needed)
-    #   - name: Deploy to Kubernetes
-    #     run: |
-    #       kubectl apply -f ./microservices/k8s/blog-service-deployment.yaml
-    #       kubectl apply -f ./microservices/k8s/auth-service-deployment.yaml
-    #       kubectl apply -f ./microservices/k8s/analytics-service-deployment.yaml
-    #       kubectl apply -f ./microservices/k8s/k8s-service.yaml
-
-    #   # Optionally, scale services (e.g., scale up after deployment)
-    #   - name: Scale the services
-    #     run: |
-    #       kubectl scale deployment blog-service --replicas=3
-    #       kubectl scale deployment auth-service --replicas=3
-    #       kubectl scale deployment analytics-service --replicas=3
+      # Build and push reverse-proxy image
+      - name: Build and push reverse-proxy image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/reverse-proxy:latest ./reverse-proxy
+          docker push ${{ secrets.DOCKER_USERNAME }}/reverse-proxy:latest

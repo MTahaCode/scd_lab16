@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apache-config
+data:
+  httpd.conf: |
+    ServerName localhost
+
+    # Enable proxy modules
+    LoadModule proxy_module modules/mod_proxy.so
+    LoadModule proxy_http_module modules/mod_proxy_http.so
+    LoadModule rewrite_module modules/mod_rewrite.so
+
+    # Virtual host to route traffic to the respective services
+    <VirtualHost *:80>
+        # Proxy for Blog Service
+        ProxyPass /blog-service http://blog-service:80/
+        ProxyPassReverse /blog-service http://blog-service:80/
+
+        # Proxy for Auth Service
+        ProxyPass /auth-service http://auth-service:80/
+        ProxyPassReverse /auth-service http://auth-service:80/
+
+        # Proxy for Analytics Service
+        ProxyPass /analytics-service http://analytics-service:80/
+        ProxyPassReverse /analytics-service http://analytics-service:80/
+    </VirtualHost>

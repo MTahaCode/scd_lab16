@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-reverse-proxy
+  labels:
+    app: apache-reverse-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache-reverse-proxy
+  template:
+    metadata:
+      labels:
+        app: apache-reverse-proxy
+    spec:
+      containers:
+        - name: apache-reverse-proxy
+          image: httpd:latest
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/local/apache2/conf
+              subPath: httpd.conf
+          ports:
+            - containerPort: 80
+      volumes:
+        - name: config-volume
+          configMap:
+            name: apache-config
