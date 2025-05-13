@@ -24,36 +24,36 @@ jobs:
       # Build and push Docker images for each service
       - name: Build and push blog-service image
         run: |
-          docker build -t yourdockerhub/blog-service:latest ./microservices/blog-service
-          docker push yourdockerhub/blog-service:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/blog-service:latest ./microservices/blog-service
+          docker push ${{ secrets.DOCKER_USERNAME }}/blog-service:latest
 
       - name: Build and push auth-service image
         run: |
-          docker build -t yourdockerhub/auth-service:latest ./microservices/auth-service
-          docker push yourdockerhub/auth-service:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/auth-service:latest ./microservices/auth-service
+          docker push ${{ secrets.DOCKER_USERNAME }}/auth-service:latest
 
       - name: Build and push analytics-service image
         run: |
-          docker build -t yourdockerhub/analytics-service:latest ./microservices/analytics-service
-          docker push yourdockerhub/analytics-service:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/analytics-service:latest ./microservices/analytics-service
+          docker push ${{ secrets.DOCKER_USERNAME }}/analytics-service:latest
 
-      # Set up Kubernetes credentials from secret
-      - name: Set up Kubeconfig
-        uses: azure/setup-kubectl@v1
-        with:
-          kubeconfig: ${{ secrets.KUBECONFIG }}  # Set your kubeconfig file as a GitHub secret
+      # Set up Kubernetes credentials from secret (optional, comment if not needed)
+    #   - name: Set up Kubeconfig
+    #     uses: azure/setup-kubectl@v1
+    #     with:
+    #       kubeconfig: ${{ secrets.KUBECONFIG }}  # Set your kubeconfig file as a GitHub secret
 
-      # Deploy the services to Kubernetes
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f ./microservices/k8s/blog-service-deployment.yaml
-          kubectl apply -f ./microservices/k8s/auth-service-deployment.yaml
-          kubectl apply -f ./microservices/k8s/analytics-service-deployment.yaml
-          kubectl apply -f ./microservices/k8s/k8s-service.yaml
+    #   # Deploy the services to Kubernetes (optional, comment if not needed)
+    #   - name: Deploy to Kubernetes
+    #     run: |
+    #       kubectl apply -f ./microservices/k8s/blog-service-deployment.yaml
+    #       kubectl apply -f ./microservices/k8s/auth-service-deployment.yaml
+    #       kubectl apply -f ./microservices/k8s/analytics-service-deployment.yaml
+    #       kubectl apply -f ./microservices/k8s/k8s-service.yaml
 
-      # Optionally, scale services (e.g., scale up after deployment)
-      - name: Scale the services
-        run: |
-          kubectl scale deployment blog-service --replicas=3
-          kubectl scale deployment auth-service --replicas=3
-          kubectl scale deployment analytics-service --replicas=3
+    #   # Optionally, scale services (e.g., scale up after deployment)
+    #   - name: Scale the services
+    #     run: |
+    #       kubectl scale deployment blog-service --replicas=3
+    #       kubectl scale deployment auth-service --replicas=3
+    #       kubectl scale deployment analytics-service --replicas=3
